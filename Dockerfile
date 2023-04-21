@@ -9,6 +9,7 @@ ENV LANGUAGE C.UTF-8
 
 RUN apt update && \
     apt install -y \
+	acl \
 	autoconf-archive \
 	libcmocka0 \
   	libcmocka-dev \
@@ -52,7 +53,7 @@ RUN apt update && \
 	udev \
 	dbus
 
-RUN mkdir -p /tpm2/{ibmtpm,test}
+RUN mkdir -p /tpm2/ibmtpm
 
 WORKDIR /tpm2
 RUN git clone --branch=3.2.x https://github.com/tpm2-software/tpm2-tss.git && \
