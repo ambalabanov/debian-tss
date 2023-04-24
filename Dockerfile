@@ -62,20 +62,21 @@ RUN git clone --branch=3.2.x https://github.com/tpm2-software/tpm2-tss.git && \
 WORKDIR /tpm2/tpm2-tss
 RUN ./bootstrap && \
     ./configure --with-udevrulesprefix && \
-    make -j4 && \
+    make -j$(nproc) && \
     make install
 
 WORKDIR /tpm2/tpm2-abrmd
 RUN ./bootstrap && \
     ./configure --with-dbuspolicydir=/etc/dbus-1/system.d && \
-    make -j4 && \
+    make -j$(nproc) && \
     make install
 
 WORKDIR /tpm2/ibmtpm
 ADD "https://downloads.sourceforge.net/project/ibmswtpm2/ibmtpm1682.tar.gz" ./
-RUN tar -xf ibmtpm1682.tar.gz
+RUN echo "651800d0b87cfad55b004fbdace4e41dce800a61 *ibmtpm1682.tar.gz" | sha1sum -c - &&\
+    tar -xf ibmtpm1682.tar.gz
 WORKDIR /tpm2/ibmtpm/src
-RUN make -j4
+RUN make -j$(nproc)
 RUN cp tpm_server /usr/local/bin/
 
 WORKDIR /
@@ -83,4 +84,3 @@ RUN ldconfig
 ADD ./test /tpm2/test/
 COPY entrypoint.sh /usr/local/bin/
 CMD ["entrypoint.sh"]
-
